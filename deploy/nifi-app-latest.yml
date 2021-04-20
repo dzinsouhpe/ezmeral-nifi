@@ -1,0 +1,34 @@
+---
+apiVersion: kubedirector.hpe.com/v1beta1
+kind: KubeDirectorApp
+metadata:
+  name: nifi
+spec:
+  label:
+    name: Apache NiFi 1.13.2
+    description: Apache NiFi 1.13.2 on CentOS 7
+  distroID: dzinsouhpe/nifi
+  version: '1.13.2'
+  configSchemaVersion: 7
+  defaultConfigPackage:
+    packageURL: file:///opt/configscripts/appconfig.tgz
+  defaultImageRepoTag: dzinsouhpe/nifi:1.13.2
+  services:
+  - id: nifi-jetty-svc
+    label:
+      name: NiFi Jetty Server
+    endpoint:
+      port: 8080
+      urlScheme: http
+      isDashboard: true
+  roles:
+  - id: nifi-server
+    cardinality: "1+"
+  config:
+    selectedRoles:
+    - nifi-server
+    roleServices:
+    - roleID: nifi-server
+      serviceIDs:
+      - nifi-jetty-svc
+  systemdRequired: false
